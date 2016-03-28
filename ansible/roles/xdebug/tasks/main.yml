@@ -3,3 +3,8 @@
   apt:
     name: php-xdebug
     state: latest
+
+- name: Configure Xdebug
+  template:
+    src: 20-xdebug.ini.j2
+    dest: /etc/php/7.0/fpm/conf.d/20-xdebug.ini
