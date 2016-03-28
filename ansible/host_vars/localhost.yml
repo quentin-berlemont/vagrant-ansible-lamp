@@ -1,0 +1,4 @@
+---
+document_root: /vagrant/public
+date_timezone: Europe/Paris
+mysql_root_password: root

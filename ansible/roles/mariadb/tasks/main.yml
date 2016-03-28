@@ -1,0 +1,38 @@
+---
+- name: Add MariaDB repository
+  apt_repository:
+    repo: "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/10.1/ubuntu trusty main"
+    state: present
+
+- name: Add repository key to the system
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: "0xcbcb082a1bb943db"
+    state: present
+  
+- name: Install MariaDB Server
+  apt:
+    name: mariadb-server
+    state: latest
+    update_cache: yes
+
+- name: Install MySQLdb Python
+  apt:
+    name: python-mysqldb
+    state: installed
+
+- name: Write mysql-secure-installation.sql file onto the host temp folder
+  template:
+    src: mysql-secure-installation.sql.j2
+    dest: /tmp/mysql-secure-installation.sql
+
+- name: Automate `mysql_secure_installation` command
+  mysql_db:
+    state: import
+    name: all
+    target: /tmp/mysql-secure-installation.sql
+
+- name: Write ~/.my.cnf file containing the new root credentials onto the host user folder
+  template:
+    src: my.cnf.j2
+    dest: ~/.my.cnf

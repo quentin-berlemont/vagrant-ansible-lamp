@@ -1,0 +1,62 @@
+---
+# See: https://launchpad.net/~ondrej/+archive/ubuntu/apache2
+- name: Add PPA for Apache2 repository
+  apt_repository:
+    repo: ppa:ondrej/apache2
+
+- name: Install Apache2
+  apt:
+    name: apache2
+    state: latest
+    update_cache: yes
+
+- name: Install Apache2 modules
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - libapache2-mod-fastcgi
+
+- name: Enable Apache2 modules
+  apache2_module:
+    name: "{{ item }}"
+    state: present 
+  with_items:
+    - fastcgi
+    - proxy
+    - proxy_fcgi
+    - rewrite
+    - expires
+    - headers
+  notify:
+    - restart apache
+
+- name: Write virtual hosts and configuration files onto the host
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: site.conf.j2, dest: /etc/apache2/sites-available/site.conf }
+    - { src: fqdn.conf.j2, dest: /etc/apache2/conf-available/fqdn.conf }
+
+- name: Disable defaults virtual hosts
+  command: a2dissite "{{ item }}"
+  with_items:
+    - 000-default
+    - default-ssl
+  notify:
+    - restart apache
+
+- name: Enable virtual hosts
+  command: a2ensite "{{ item }}"
+  with_items:
+    - site
+  notify:
+    - restart apache
+
+- name: Enable configuration files
+  command: a2enconf "{{ item }}"
+  with_items:
+    - fqdn
+  notify:
+    - restart apache

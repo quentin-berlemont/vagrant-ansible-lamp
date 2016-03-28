@@ -1,0 +1,39 @@
+---
+# See: https://launchpad.net/~ondrej/+archive/ubuntu/php
+- name: Add PPA for PHP repository
+  apt_repository: repo=ppa:ondrej/php
+
+- name: Install PHP
+  apt:
+    name: php7.0-fpm
+    state: latest
+    update_cache: yes
+
+- name: Install PHP CLI
+  apt:
+   name: php7.0-cli
+   state: latest
+
+- name: Install PHP extensions
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - php7.0-intl
+    - php7.0-mysql
+    - php7.0-xml
+
+- name: Configure PHP
+  template:
+    src: custom.ini.j2
+    dest: /etc/php/7.0/fpm/conf.d/custom.ini
+  notify:
+    - restart php-fpm
+
+- name: Configure PHP CLI
+  file:
+    src: /etc/php/7.0/fpm/conf.d/custom.ini
+    dest: /etc/php/7.0/cli/conf.d/custom.ini
+    state: link
+  notify:
+    - restart php-fpm
