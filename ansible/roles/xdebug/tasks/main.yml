@@ -1,0 +1,5 @@
+---
+- name: Install Xdebug
+  apt:
+    name: php-xdebug
+    state: latest

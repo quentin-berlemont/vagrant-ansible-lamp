@@ -10,6 +10,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Static IP address
   config.vm.network "private_network", ip: "192.168.50.4"
   
+  # Define the hostname
+  config.vm.hostname = "localhost"
+  
   # VirtualBox customizations
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "1024"

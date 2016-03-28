@@ -1,0 +1,8 @@
+---
+- name: Update all packages
+  apt:
+    upgrade: safe
+    update_cache: yes
+
+- name: Configure the timezone
+  command: timedatectl set-timezone "{{ date_timezone }}"

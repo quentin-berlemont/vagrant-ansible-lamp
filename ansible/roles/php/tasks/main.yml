@@ -5,13 +5,13 @@
 
 - name: Install PHP
   apt:
-    name: php7.0-fpm
+    name: php-fpm
     state: latest
     update_cache: yes
 
 - name: Install PHP CLI
   apt:
-   name: php7.0-cli
+   name: php-cli
    state: latest
 
 - name: Install PHP extensions
@@ -19,9 +19,9 @@
     name: "{{ item }}"
     state: latest
   with_items:
-    - php7.0-intl
-    - php7.0-mysql
-    - php7.0-xml
+    - php-intl
+    - php-mysql
+    - php-xml
 
 - name: Configure PHP
   template:
