@@ -36,27 +36,37 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
   with_items:
-    - { src: site.conf.j2, dest: /etc/apache2/sites-available/site.conf }
-    - { src: fqdn.conf.j2, dest: /etc/apache2/conf-available/fqdn.conf }
+    - src: site.conf.j2
+      dest: /etc/apache2/sites-available/site.conf
+    - src: fqdn.conf.j2
+      dest: /etc/apache2/conf-available/fqdn.conf
 
 - name: Disable defaults virtual hosts
-  command: a2dissite "{{ item }}"
+  file:
+    path: "/etc/apache2/sites-enabled/{{ item }}"
+    state: absent
   with_items:
-    - 000-default
-    - default-ssl
+    - 000-default.conf 
+    - default-ssl.conf 
   notify:
     - restart apache
 
 - name: Enable virtual hosts
-  command: a2ensite "{{ item }}"
+  file:
+    src: "/etc/apache2/sites-available/{{ item }}"
+    dest: "/etc/apache2/sites-enabled/{{ item }}"
+    state: link
   with_items:
-    - site
+    - site.conf
   notify:
     - restart apache
 
 - name: Enable configuration files
-  command: a2enconf "{{ item }}"
+  file:
+    src: "/etc/apache2/conf-available/{{ item }}"
+    dest: "/etc/apache2/conf-enabled/{{ item }}"
+    state: link
   with_items:
-    - fqdn
+    - fqdn.conf
   notify:
     - restart apache

@@ -1,4 +1,5 @@
 ---
+# See: https://downloads.mariadb.org/mariadb/repositories/
 - name: Add MariaDB repository
   apt_repository:
     repo: "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/10.1/ubuntu trusty main"
@@ -15,24 +16,28 @@
     name: mariadb-server
     state: latest
     update_cache: yes
+  register: install_mariadb
 
 - name: Install MySQLdb Python
   apt:
     name: python-mysqldb
     state: installed
 
-- name: Write mysql-secure-installation.sql file onto the host temp folder
-  template:
-    src: mysql-secure-installation.sql.j2
-    dest: /tmp/mysql-secure-installation.sql
+- block:
+  - name: Write mysql-secure-installation.sql file onto the host temp folder
+    template:
+      src: mysql-secure-installation.sql.j2
+      dest: /tmp/mysql-secure-installation.sql
 
-- name: Automate `mysql_secure_installation` command
-  mysql_db:
-    state: import
-    name: all
-    target: /tmp/mysql-secure-installation.sql
+  - name: Automate `mysql_secure_installation` command
+    mysql_db:
+      state: import
+      name: all
+      target: /tmp/mysql-secure-installation.sql
 
-- name: Write ~/.my.cnf file containing the new root credentials onto the host user folder
-  template:
-    src: my.cnf.j2
-    dest: ~/.my.cnf
+  - name: Write ~/.my.cnf file containing the new root credentials onto the host user folder
+    template:
+      src: my.cnf.j2
+      dest: ~/.my.cnf
+
+  when: install_mariadb.changed

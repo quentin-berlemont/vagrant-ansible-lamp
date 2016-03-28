@@ -8,10 +8,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
   
   # Static IP address
-  config.vm.network "private_network", ip: "192.168.50.4"
-  
-  # Define the hostname
-  config.vm.hostname = "localhost"
+  config.vm.network :private_network, ip: "192.168.50.4"
   
   # VirtualBox customizations
   config.vm.provider "virtualbox" do |vb|
@@ -26,5 +23,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Vagrant is not yet compatible with guest-installed Ansible 2.x
   # See: https://github.com/mitchellh/vagrant/issues/6793
   # See: https://github.com/mitchellh/vagrant/issues/6757
-  config.vm.provision "shell", path: "./ansible/init.sh"
+  config.vm.provision :shell, path: "./ansible/init.sh"
 end

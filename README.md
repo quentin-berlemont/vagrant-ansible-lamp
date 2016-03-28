@@ -14,7 +14,7 @@ Technical Details
 * Ubuntu 14.04 64-bit
 * Apache 2.x
 * MariaDB 10.x
-* PHP 7.x
+* PHP-FPM/CLI 7.x
 * Xdebug
 * Composer
 

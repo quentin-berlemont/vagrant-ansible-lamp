@@ -3,6 +3,11 @@
   apt:
     upgrade: safe
     update_cache: yes
+    cache_valid_time: 86400
 
 - name: Configure the timezone
-  command: timedatectl set-timezone "{{ date_timezone }}"
+  file:
+    src: /usr/share/zoneinfo/{{ date_timezone }}
+    dest: /etc/localtime
+    state: link
+    force: true
