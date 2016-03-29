@@ -1,3 +1,4 @@
+---
 - name: Install Composer
   get_url:
     url: https://getcomposer.org/composer.phar
